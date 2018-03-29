@@ -1,0 +1,27 @@
+{
+    "name": "mattmezza/cache",
+    "description": "A simple cache component for caching REST response",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^7.0",
+        "vlucas/phpdotenv": "^2.4"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matteo Merola",
+            "email": "mattmezza@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cache\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit --bootstrap tests/bootstrap.php tests/CacheTest.php"
+    }
+}
