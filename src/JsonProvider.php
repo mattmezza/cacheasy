@@ -6,12 +6,12 @@ namespace Cacheasy;
 /**
  * This class is responsible of providing a string resource
  */
-interface StringProvider
+interface JsonProvider
 {
     /**
      * This method is responsible of getting the data from a slow API for instance
      * 
-     * @return  string  The content to cache
+     * @return  array  The content to cache
      */
-    public function get() : string;
+    public function get() : array;
 }
