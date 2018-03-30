@@ -1,6 +1,6 @@
 {
     "name": "mattmezza/cache",
-    "description": "A simple cache component for caching REST response",
+    "description": "I hate slow APIs, I cache things on disk.",
     "type": "library",
     "require-dev": {
         "phpunit/phpunit": "^7.0"
