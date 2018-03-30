@@ -3,6 +3,9 @@ cacheasy
 
 > I hate slow APIs, I cache things on disk.
 
+# Install
+
+`composer require mattmezza/cacheasy`
 # Usage
 
 With string responses:
@@ -49,5 +52,10 @@ echo $result2["property"];
 - `getJson($key, $provider = null) : array`: returns `hitJson(...)` if key is cached, calls provider otherwise. Throws exception if $provider is null and $key is not cached
 - `getString($key, $provider = null) : string`: returns `hitString(...)` if key is cached, calls provider otherwise. Throws exception if $provider is null and $key is not cached
 
+# Development
+
+- `git clone https://github.com/mattmezza/cacheasy.git`
+- `cd cacheasy`
+- `composer test`
 
 ##### Matteo Merola <mattmezza@gmail.com>

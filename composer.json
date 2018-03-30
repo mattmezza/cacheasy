@@ -1,5 +1,5 @@
 {
-    "name": "mattmezza/cache",
+    "name": "mattmezza/cacheasy",
     "description": "I hate slow APIs, I cache things on disk.",
     "type": "library",
     "require-dev": {
