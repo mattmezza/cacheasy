@@ -51,8 +51,15 @@ echo $result2["property"];
 - `hitString($key) : string`: tries to resume from cache a string with key
 - `hitJson($key) : array`: tries to resume from cache a json with key
 - `isCached($key) : bool`: checks if key is cached on disk and if it is not expired
-- `getJson($key, $provider = null) : array`: returns `hitJson(...)` if key is cached, calls provider otherwise. Throws exception if $provider is null and $key is not cached
-- `getString($key, $provider = null) : string`: returns `hitString(...)` if key is cached, calls provider otherwise. Throws exception if $provider is null and $key is not cached
+- `getJson($key, $provider = null, bool $forceFresh = false) : array`: returns `hitJson(...)` if key is cached, calls provider otherwise. Throws exception if $provider is null and $key is not cached. If $forceFresh is set to `true` skips isCached check and calls the provider (ultimately caching the data).
+- `getString($key, $provider = null, bool $forceFresh = false) : string`: returns `hitString(...)` if key is cached, calls provider otherwise. Throws exception if $provider is null and $key is not cached. If $forceFresh is set to `true` skips isCached check and calls the provider (ultimately caching the data).
+- `invalidate($key) : void`: deletes the cached resource
+- `invalidateAll() : void`: deletes all the cached resources
+
+## Exceptions
+
+`MissingProviderException`: when `get..(...)` is called for a non cached resource and no provider is passed, or when, even if the resource is cached, the method is invoked with null provider and with `true` force fresh values.
+`NotCachedException`: when you wanna hit the cache but the resource is not cached yet.
 
 # Development
 

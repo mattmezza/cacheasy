@@ -4,6 +4,7 @@ use PHPUnit\Framework\TestCase;
 use Cacheasy\Cache;
 use Cacheasy\StringProvider;
 use Cacheasy\NotCachedException;
+use Cacheasy\MissingProviderException;
 
 class CacheTest extends TestCase
 {
@@ -32,9 +33,26 @@ class CacheTest extends TestCase
         $this->assertTrue(file_exists("tests/cache/" . md5($label2)));
     }
 
-    public function testNotCachedGet()
+    public function testGetWithForce()
     {
-        $this->expectException(NotCachedException::class);
+        $resourceOracle = "prova";
+        // trying the provider, we are trying to hit the cache for $label2 (which is not set)
+        // hence Cache should invoke the provider and cache the oracle
+        $label2 = "prova2";
+        $resource2 = $this->cache->getString($label2, $this->createStringProvider($resourceOracle));
+        $this->assertEquals($resourceOracle, $resource2);
+        $this->assertTrue(file_exists("tests/cache/" . md5($label2)));
+        // now the resource has been cached on file
+        // we will try to call with forceFresh with custom provider so the file should be overwritten
+        $resource3 = $this->cache->getString($label2, $this->createStringProvider("dio"), true);
+        $this->assertEquals("dio", $resource3);
+        $this->assertTrue(file_exists("tests/cache/" . md5($label2)));
+        $this->assertEquals("dio", file_get_contents("tests/cache/". md5($label2)));
+    }
+
+    public function testNotCachedMissingProviderGet()
+    {
+        $this->expectException(MissingProviderException::class);
         $resource = $this->cache->getString("dio");
     }
 
@@ -102,6 +120,16 @@ class CacheTest extends TestCase
         $this->cache->invalidate("prova");
         $files2 = glob('tests/cache/*'); // get all file names
         $this->assertEquals(0, count($files2));
+    }
+
+    public function testInvalidateNonExistantFile()
+    {
+        $this->expectException(NotCachedException::class);
+        $name = md5("prova");
+        file_put_contents("tests/cache/$name", "prova");
+        $files = glob('tests/cache/*'); // get all file names
+        $this->assertEquals(1, count($files));
+        $this->cache->invalidate("provad");
     }
 
     public function testInvalidateAll()

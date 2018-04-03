@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace Cacheasy;
 
-use Cacheasy\NotFoundException;
+use Cacheasy\NotCachedException;
+use Cacheasy\MissingProviderException;
 use Cacheasy\StringProvider;
 use Cacheasy\JsonProvider;
 
@@ -30,6 +31,8 @@ class Cache
      * @param   StringProvider  $provider   The provider for the actual content
      * @param   bool    $forceFresh     A bool indicating whether or not to force a fresh call
      *
+     * @throws  MissingProviderException    Thrown when a provider needs to be called but null is passed.
+     *
      * @return  string   The fetched and/or cached data
      */
     public function getString(string $label, StringProvider $provider = null, bool $forceFresh = false) : string
@@ -37,6 +40,9 @@ class Cache
         if ($forceFresh) {
             // skipping everything, the user requested fresh data
             // he wants to wait, we better cache the fresh data
+            if (!$provider) {
+                throw new MissingProviderException($label);
+            }
             $data = $provider->get();
             $this->cacheString($label, $data);
             return $data;
@@ -47,7 +53,7 @@ class Cache
         } catch (NotCachedException $e) {
             // Oooopsss... we ain't got anything, let's get the fresh data (and cache them)
             if (!$provider) {
-                throw $e;
+                throw new MissingProviderException($label);
             }
             $data = $provider->get();
             $this->cacheString($label, $data);
@@ -63,6 +69,8 @@ class Cache
      * @param   JsonProvider  $provider   The provider for the actual content
      * @param   bool    $forceFresh     A bool indicating whether or not to force a fresh call
      *
+     * @throws  MissingProviderException    Thrown when a provider needs to be called but null is passed.
+     *
      * @return  array   The fetched and/or cached data
      */
     public function getJson(string $label, JsonProvider $provider = null, bool $forceFresh = false) : array
@@ -70,6 +78,9 @@ class Cache
         if ($forceFresh) {
             // skipping everything, the user requested fresh data
             // he wants to wait, we better cache the fresh data
+            if (!$provider) {
+                throw new MissingProviderException($label);
+            }
             $data = $provider->get();
             $this->cacheJson($label, $data);
             return $data;
@@ -80,7 +91,7 @@ class Cache
         } catch (NotCachedException $e) {
             // Oooopsss... we ain't got anything, let's get the fresh data (and cache them)
             if (!$provider) {
-                throw $e;
+                throw new MissingProviderException($label);
             }
             $data = $provider->get();
             $this->cacheJson($label, $data);
@@ -167,9 +178,14 @@ class Cache
      * Invalidates an entry by deleting the corresponding file
      *
      * @param   string  $label  The key of the element to invalidate
+     *
+     * @throws  NotCachedException  Thrown when the resource $label is not cached.
      */
     public function invalidate(string $label) : void
     {
+        if (!$this->isCached($label)) {
+            throw new NotCachedException($label);
+        }
         $filename = $this->path . "/" . md5($label);
         if (file_exists($filename)) {
             unlink($filename);
