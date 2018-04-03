@@ -28,12 +28,24 @@ class Cache
      *
      * @param   string  $label  The key of the resource to cache
      * @param   StringProvider  $provider   The provider for the actual content
+     * @param   bool    $forceFresh     A bool indicating whether or not to force a fresh call
+     *
+     * @return  string   The fetched and/or cached data
      */
-    public function getString(string $label, StringProvider $provider = null) : string
+    public function getString(string $label, StringProvider $provider = null, bool $forceFresh = false) : string
     {
+        if ($forceFresh) {
+            // skipping everything, the user requested fresh data
+            // he wants to wait, we better cache the fresh data
+            $data = $provider->get();
+            $this->cacheString($label, $data);
+            return $data;
+        }
+        // let's check if we've got something cached already...
         try {
             return $this->hitString($label);
         } catch (NotCachedException $e) {
+            // Oooopsss... we ain't got anything, let's get the fresh data (and cache them)
             if (!$provider) {
                 throw $e;
             }
@@ -49,12 +61,24 @@ class Cache
      *
      * @param   string  $label  The key of the resource to cache
      * @param   JsonProvider  $provider   The provider for the actual content
+     * @param   bool    $forceFresh     A bool indicating whether or not to force a fresh call
+     *
+     * @return  array   The fetched and/or cached data
      */
-    public function getJson(string $label, JsonProvider $provider = null) : array
+    public function getJson(string $label, JsonProvider $provider = null, bool $forceFresh = false) : array
     {
+        if ($forceFresh) {
+            // skipping everything, the user requested fresh data
+            // he wants to wait, we better cache the fresh data
+            $data = $provider->get();
+            $this->cacheJson($label, $data);
+            return $data;
+        }
+        // let's check if we've got something cached already...
         try {
             return json_decode($this->hitString($label), true);
         } catch (NotCachedException $e) {
+            // Oooopsss... we ain't got anything, let's get the fresh data (and cache them)
             if (!$provider) {
                 throw $e;
             }
@@ -137,5 +161,31 @@ class Cache
             return true;
         }
         return false;
+    }
+
+    /**
+     * Invalidates an entry by deleting the corresponding file
+     *
+     * @param   string  $label  The key of the element to invalidate
+     */
+    public function invalidate(string $label) : void
+    {
+        $filename = $this->path . "/" . md5($label);
+        if (file_exists($filename)) {
+            unlink($filename);
+        }
+    }
+
+    /**
+     * Invalidates all the cache entries by deleting the corresponding files
+     */
+    public function invalidateAll() : void
+    {
+        $files = glob($this->path . "/*"); // get all file names
+        foreach ($files as $file) { // iterate files
+            if (is_file($file)) {
+                unlink($file); // delete file
+            }
+        }
     }
 }

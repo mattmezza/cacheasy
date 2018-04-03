@@ -93,6 +93,28 @@ class CacheTest extends TestCase
         $this->assertEquals($value, $this->cache->getString($key));
     }
 
+    public function testInvalidate()
+    {
+        $name = md5("prova");
+        file_put_contents("tests/cache/$name", "prova");
+        $files = glob('tests/cache/*'); // get all file names
+        $this->assertEquals(1, count($files));
+        $this->cache->invalidate("prova");
+        $files2 = glob('tests/cache/*'); // get all file names
+        $this->assertEquals(0, count($files2));
+    }
+
+    public function testInvalidateAll()
+    {
+        $name = md5("prova");
+        file_put_contents("tests/cache/$name", "prova");
+        $files = glob('tests/cache/*'); // get all file names
+        $this->assertEquals(1, count($files));
+        $this->cache->invalidateAll();
+        $files2 = glob('tests/cache/*'); // get all file names
+        $this->assertEquals(0, count($files2));
+    }
+
     public function tearDown()
     {
         // remove all files
