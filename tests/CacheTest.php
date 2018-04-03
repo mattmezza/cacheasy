@@ -79,7 +79,7 @@ class CacheTest extends TestCase
         try {
             // this should fail
             $res = $this->cache->hitString($key);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             // the exc should match
             $this->assertInstanceOf(NotCachedException::class, $e);
             // ok, I am caching again
@@ -93,12 +93,12 @@ class CacheTest extends TestCase
         $this->assertEquals($value, $this->cache->getString($key));
     }
 
-    public function tearDown() 
+    public function tearDown()
     {
         // remove all files
         $files = glob('tests/cache/*'); // get all file names
-        foreach($files as $file) { // iterate files
-            if(is_file($file)) {
+        foreach ($files as $file) { // iterate files
+            if (is_file($file)) {
                 unlink($file); // delete file
             }
         }

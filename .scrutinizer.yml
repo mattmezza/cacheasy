@@ -1,0 +1,11 @@
+build:
+    environment:
+        php:
+            version: 7.0,7.1,7.2
+    tests:
+        override:
+            -
+                command: 'vendor/bin/phpunit --coverage-clover=coverage --bootstrap vendor/autoload.php tests/CacheTest.php'
+                coverage:
+                    file: 'coverage'
+                    format: 'clover'
