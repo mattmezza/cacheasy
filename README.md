@@ -1,6 +1,8 @@
 cacheasy
 =====
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mattmezza/cacheasy/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mattmezza/cacheasy/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/mattmezza/cacheasy/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/mattmezza/cacheasy/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/mattmezza/cacheasy/badges/build.png?b=master)](https://scrutinizer-ci.com/g/mattmezza/cacheasy/build-status/master) 
+
 > I hate slow APIs, I cache things on disk.
 
 # Install
