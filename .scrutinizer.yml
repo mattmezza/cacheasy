@@ -5,7 +5,7 @@ build:
     tests:
         override:
             -
-                command: 'vendor/bin/phpunit --coverage-clover=coverage --bootstrap vendor/autoload.php tests/CacheTest.php'
+                command: 'vendor/bin/phpunit --whitelist src/ --coverage-clover=coverage --bootstrap vendor/autoload.php tests/CacheTest.php'
                 coverage:
                     file: 'coverage'
                     format: 'clover'
